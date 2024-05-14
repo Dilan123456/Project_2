@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Marathon Zeitvorhersage</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Willkommen zur Marathon Zeitvorhersage!</h1>
+    <p>Geben Sie Ihre Daten ein, um die vorhergesagte Marathonzeit zu erhalten:</p>
+    <form id="predictionForm" method="post">
+        <div>
+            <label for="distance">Distanz in km:</label>
+            <input type="number" id="distance" name="distance" required>
+        </div>
+        <div>
+            <label for="duration">Dauer:</label>
+            <input type="number" id="duration" name="duration" required>
+        </div>
+        <div>
+            <label for="age_group">Altersgruppe:</label>
+            <select id="age_group" name="age_group" required>
+                <option value="0">18-34</option>
+                <option value="1">35-54</option>
+                <option value="2">55+</option>
+            </select>
+        </div>
+        <button type="submit" id="predictButton">Vorhersage erhalten</button>
+    </form>    
+    <p id="response"></p>
+
+    <script>
+        $(document).ready(function () {
+            $('#predictionForm').on('submit', function (event) {
+                event.preventDefault(); // Verhindern des Standardverhaltens des Formulars
+
+                var inputData = {
+                    distance: parseFloat($('#distance').val()),
+                    duration: parseFloat($('#duration').val()),
+                    age_group: parseFloat($('#age_group').val())
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/predict',
+                    data: JSON.stringify(inputData),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'text',
+                    success: function (response) {
+                        console.log('Prediction result:', response);
+                        $('#response').text('Prediction result: ' + response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        $('#response').text('Error: ' + error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
